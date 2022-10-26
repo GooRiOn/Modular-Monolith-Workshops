@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using MySpot.Modules.Cleaning.Api;
 using MySpot.Shared.Abstractions;
 using MySpot.Shared.Infrastructure;
 using MySpot.Shared.Infrastructure.Logging;
@@ -21,6 +22,7 @@ foreach (var module in modules)
 }
 
 var app = builder.Build();
+
 app.UseModularInfrastructure();
 
 foreach (var module in modules)
