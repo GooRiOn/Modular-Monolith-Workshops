@@ -2,7 +2,7 @@
 @parkingSpotId = 00000000-0000-0000-0000-000000000000
 
 ###
-GET {{url}}
+GET {{url}}/cleaning
 
 ###
 GET {{url}}/parking-spots

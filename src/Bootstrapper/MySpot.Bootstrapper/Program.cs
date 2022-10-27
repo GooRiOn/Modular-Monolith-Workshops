@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using MySpot.Modules.Cleaning.Api;
 using MySpot.Shared.Abstractions;
 using MySpot.Shared.Infrastructure;
 using MySpot.Shared.Infrastructure.Logging;
@@ -35,6 +34,8 @@ app.MapGet("/", (AppInfo appInfo) => appInfo).WithTags("API").WithName("Info");
 app.MapGet("/ping", () => "pong").WithTags("API").WithName("Pong");
 
 app.MapGet("/modules", (ModuleInfoProvider moduleInfoProvider) => moduleInfoProvider.Modules);
+
+app.UseRouting().UseEndpoints(x => x.MapControllers());
 
 foreach (var module in modules)
 {

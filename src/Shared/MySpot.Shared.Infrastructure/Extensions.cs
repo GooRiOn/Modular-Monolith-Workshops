@@ -125,7 +125,7 @@ public static class Extensions
         return services;
     }
 
-    public static IApplicationBuilder UseModularInfrastructure(this IApplicationBuilder app)
+    public static IApplicationBuilder  UseModularInfrastructure(this IApplicationBuilder app)
     {
         app.UseForwardedHeaders(new ForwardedHeadersOptions
         {
