@@ -102,7 +102,7 @@ public static class Extensions
         services.AddSingleton<IClock, UtcClock>();
         services.AddSingleton<IDispatcher, InMemoryDispatcher>();
         services.AddHostedService<DbContextAppInitializer>();
-     //   services.AddTransactionalDecorators();
+        services.AddTransactionalDecorators();
         services.AddControllers()
             .ConfigureApplicationPartManager(manager =>
             {

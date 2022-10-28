@@ -33,9 +33,10 @@ internal sealed class ParkingSpotsService : IParkingSpotsService
     {
         await _parkingSpots.AddAsync(parkingSpot);
         await _context.SaveChangesAsync();
-
+        
+        // saved into outbox
         //await _availabilityApiClient.AddResourceAsync(parkingSpot.Id, 2, new[] {"parking_spot"});
-
+        
         await _messageBroker.PublishAsync(new ParkingSpotCreated(parkingSpot.Id));
     }
 
