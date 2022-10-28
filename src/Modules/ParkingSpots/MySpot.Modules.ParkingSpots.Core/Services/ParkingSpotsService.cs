@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using MySpot.Modules.ParkingSpots.Core.Clients;
 using MySpot.Modules.ParkingSpots.Core.DAL;
 using MySpot.Modules.ParkingSpots.Core.Entities;
+using MySpot.Modules.ParkingSpots.Core.Events;
 using MySpot.Modules.ParkingSpots.Core.Exceptions;
+using MySpot.Shared.Abstractions.Messaging;
 using MySpot.Shared.Abstractions.Modules;
 
 namespace MySpot.Modules.ParkingSpots.Core.Services;
@@ -13,11 +15,14 @@ internal sealed class ParkingSpotsService : IParkingSpotsService
     private readonly ParkingSpotsDbContext _context;
 
     private readonly IAvailabilityApiClient _availabilityApiClient;
+    private readonly IMessageBroker _messageBroker;
 
-    public ParkingSpotsService(ParkingSpotsDbContext context, IAvailabilityApiClient availabilityApiClient)
+    public ParkingSpotsService(ParkingSpotsDbContext context, IAvailabilityApiClient availabilityApiClient, 
+        IMessageBroker messageBroker)
     {
         _context = context;
         _availabilityApiClient = availabilityApiClient;
+        _messageBroker = messageBroker;
         _parkingSpots = context.ParkingSpots;
     }
 
@@ -29,7 +34,9 @@ internal sealed class ParkingSpotsService : IParkingSpotsService
         await _parkingSpots.AddAsync(parkingSpot);
         await _context.SaveChangesAsync();
 
-        await _availabilityApiClient.AddResourceAsync(parkingSpot.Id, 2, new[] {"parking_spot"});
+        //await _availabilityApiClient.AddResourceAsync(parkingSpot.Id, 2, new[] {"parking_spot"});
+
+        await _messageBroker.PublishAsync(new ParkingSpotCreated(parkingSpot.Id));
     }
 
     public async Task UpdateAsync(ParkingSpot parkingSpot)
