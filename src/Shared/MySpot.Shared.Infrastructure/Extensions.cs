@@ -18,7 +18,6 @@ using MySpot.Shared.Infrastructure.Api;
 using MySpot.Shared.Infrastructure.Auth;
 using MySpot.Shared.Infrastructure.Commands;
 using MySpot.Shared.Infrastructure.Contexts;
-using MySpot.Shared.Infrastructure.Contracts;
 using MySpot.Shared.Infrastructure.Dispatchers;
 using MySpot.Shared.Infrastructure.Events;
 using MySpot.Shared.Infrastructure.Exceptions;
@@ -90,7 +89,6 @@ public static class Extensions
         services.AddAuth(configuration, modules);
         services.AddErrorHandling();
         services.AddContext();
-        services.AddContracts();
         services.AddCommands(assemblies);
         services.AddQueries(assemblies);
         services.AddEvents(assemblies);
@@ -103,6 +101,7 @@ public static class Extensions
         services.AddSingleton<IDispatcher, InMemoryDispatcher>();
         services.AddHostedService<DbContextAppInitializer>();
         services.AddTransactionalDecorators();
+        services.AddLoggingDecorators();
         services.AddControllers()
             .ConfigureApplicationPartManager(manager =>
             {
@@ -125,7 +124,7 @@ public static class Extensions
         return services;
     }
 
-    public static IApplicationBuilder  UseModularInfrastructure(this IApplicationBuilder app)
+    public static IApplicationBuilder UseModularInfrastructure(this IApplicationBuilder app)
     {
         app.UseForwardedHeaders(new ForwardedHeadersOptions
         {

@@ -22,7 +22,7 @@ internal sealed class UsersModule : IModule
     {
         "users"
     };
-
+    
     public void Register(IServiceCollection services, IConfiguration configuration)
     {
         services.AddCore(configuration);

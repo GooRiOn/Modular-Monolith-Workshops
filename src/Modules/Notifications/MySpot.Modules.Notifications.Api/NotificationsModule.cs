@@ -17,11 +17,6 @@ internal sealed class NotificationsModule : IModule
 {
     public string Name { get; } = "Notifications";
     
-    public IEnumerable<string> Policies { get; } = new[]
-    {
-        "notifications"
-    };
-    
     public void Register(IServiceCollection services, IConfiguration configuration)
     {
         services.AddPostgres<NotificationsDbContext>(configuration)

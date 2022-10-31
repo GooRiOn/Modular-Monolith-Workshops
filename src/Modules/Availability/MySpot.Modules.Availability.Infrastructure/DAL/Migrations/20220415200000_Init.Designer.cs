@@ -4,44 +4,65 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MySpot.Modules.ParkingSpots.Core.DAL;
+using MySpot.Modules.Availability.Infrastructure.DAL;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MySpot.Modules.ParkingSpots.Core.DAL.Migrations
+namespace MySpot.Modules.Availability.Infrastructure.DAL.Migrations
 {
-    [DbContext(typeof(ParkingSpotsDbContext))]
-    [Migration("20221028094002_Added_Outbox")]
-    partial class Added_Outbox
+    [DbContext(typeof(AvailabilityDbContext))]
+    [Migration("20220415200000_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("parking_spots")
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasDefaultSchema("availability")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MySpot.Modules.ParkingSpots.Core.Entities.ParkingSpot", b =>
+            modelBuilder.Entity("MySpot.Modules.Availability.Core.Entities.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("DisplayOrder")
+                    b.Property<int?>("Capacity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<DateTimeOffset?>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ResourceId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ParkingSpots", "parking_spots");
+                    b.HasIndex("ResourceId");
+
+                    b.ToTable("Reservations", "availability");
+                });
+
+            modelBuilder.Entity("MySpot.Modules.Availability.Core.Entities.Resource", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("Capacity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Resources", "availability");
                 });
 
             modelBuilder.Entity("MySpot.Shared.Infrastructure.Messaging.Outbox.InboxMessage", b =>
@@ -61,7 +82,7 @@ namespace MySpot.Modules.ParkingSpots.Core.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Inbox", "parking_spots");
+                    b.ToTable("Inbox", "availability");
                 });
 
             modelBuilder.Entity("MySpot.Shared.Infrastructure.Messaging.Outbox.OutboxMessage", b =>
@@ -96,7 +117,19 @@ namespace MySpot.Modules.ParkingSpots.Core.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Outbox", "parking_spots");
+                    b.ToTable("Outbox", "availability");
+                });
+
+            modelBuilder.Entity("MySpot.Modules.Availability.Core.Entities.Reservation", b =>
+                {
+                    b.HasOne("MySpot.Modules.Availability.Core.Entities.Resource", null)
+                        .WithMany("Reservations")
+                        .HasForeignKey("ResourceId");
+                });
+
+            modelBuilder.Entity("MySpot.Modules.Availability.Core.Entities.Resource", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

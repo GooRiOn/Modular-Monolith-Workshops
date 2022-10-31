@@ -11,7 +11,7 @@ internal sealed class UsersInitializer : IInitializer
 {
     private readonly HashSet<string> _permissions = new()
     {
-        "availability", "mapping", "notifications", "parking_spots", "reservations", "users"
+        "availability", "mapping", "parking_spots", "reservations", "users"
     };
 
     private readonly UsersDbContext _dbContext;

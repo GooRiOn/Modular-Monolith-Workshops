@@ -2,6 +2,9 @@
 @parkingSpotId = 00000000-0000-0000-0000-000000000000
 
 ###
+GET {{url}}
+
+###
 GET {{url}}/parking-spots
 
 ###
@@ -9,8 +12,8 @@ POST {{url}}/parking-spots
 Content-Type: application/json
 
 {
-    "name": "P05",
-    "displayOrder": "500"
+    "name": "P01",
+    "displayOrder": "100"
 }
 
 ###

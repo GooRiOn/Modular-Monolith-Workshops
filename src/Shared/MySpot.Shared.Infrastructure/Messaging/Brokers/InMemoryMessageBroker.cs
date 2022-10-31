@@ -76,7 +76,7 @@ public sealed class InMemoryMessageBroker : IMessageBroker
 
         if (_outboxBroker.Enabled)
         {
-            await _outboxBroker.SendAsync(messages); // save into DB
+            await _outboxBroker.SendAsync(messages);
             return;
         }
 

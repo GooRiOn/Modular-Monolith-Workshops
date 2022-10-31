@@ -21,7 +21,6 @@ foreach (var module in modules)
 }
 
 var app = builder.Build();
-
 app.UseModularInfrastructure();
 
 foreach (var module in modules)
@@ -34,8 +33,6 @@ app.MapGet("/", (AppInfo appInfo) => appInfo).WithTags("API").WithName("Info");
 app.MapGet("/ping", () => "pong").WithTags("API").WithName("Pong");
 
 app.MapGet("/modules", (ModuleInfoProvider moduleInfoProvider) => moduleInfoProvider.Modules);
-
-app.UseRouting().UseEndpoints(x => x.MapControllers());
 
 foreach (var module in modules)
 {

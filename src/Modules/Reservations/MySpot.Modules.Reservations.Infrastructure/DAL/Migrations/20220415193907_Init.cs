@@ -13,6 +13,41 @@ namespace MySpot.Modules.Reservations.Infrastructure.DAL.Migrations
                 name: "reservations");
 
             migrationBuilder.CreateTable(
+                name: "Inbox",
+                schema: "reservations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    ReceivedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ProcessedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inbox", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Outbox",
+                schema: "reservations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CorrelationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Type = table.Column<string>(type: "text", nullable: true),
+                    Data = table.Column<string>(type: "text", nullable: true),
+                    TraceId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Outbox", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 schema: "reservations",
                 columns: table => new
@@ -88,6 +123,14 @@ namespace MySpot.Modules.Reservations.Infrastructure.DAL.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Inbox",
+                schema: "reservations");
+
+            migrationBuilder.DropTable(
+                name: "Outbox",
+                schema: "reservations");
+
             migrationBuilder.DropTable(
                 name: "Reservations",
                 schema: "reservations");

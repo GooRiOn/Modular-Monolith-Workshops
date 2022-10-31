@@ -15,12 +15,11 @@ internal sealed class SignedUpHandler : IEventHandler<SignedUp>
         _dbContext = dbContext;
         _logger = logger;
     }
-
+    
     public async Task HandleAsync(SignedUp @event, CancellationToken cancellationToken = default)
     {
         await _dbContext.Users.AddAsync(new User(@event.UserId, @event.Email), cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
-        _logger.LogInformation($"Added user with email: {@event.Email}");
+        _logger.LogInformation($"Added the user with ID: '{@event.UserId}', email: '{@event.Email}'.");
     }
 }

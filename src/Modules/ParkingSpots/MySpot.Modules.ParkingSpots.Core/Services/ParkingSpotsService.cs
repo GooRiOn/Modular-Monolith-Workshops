@@ -5,25 +5,24 @@ using MySpot.Modules.ParkingSpots.Core.Entities;
 using MySpot.Modules.ParkingSpots.Core.Events;
 using MySpot.Modules.ParkingSpots.Core.Exceptions;
 using MySpot.Shared.Abstractions.Messaging;
-using MySpot.Shared.Abstractions.Modules;
 
 namespace MySpot.Modules.ParkingSpots.Core.Services;
 
 internal sealed class ParkingSpotsService : IParkingSpotsService
 {
+    private const int ParkingSpotCapacity = 2;
     private readonly DbSet<ParkingSpot> _parkingSpots;
     private readonly ParkingSpotsDbContext _context;
-
-    private readonly IAvailabilityApiClient _availabilityApiClient;
     private readonly IMessageBroker _messageBroker;
+    private readonly IAvailabilityApiClient _availabilityApiClient;
 
-    public ParkingSpotsService(ParkingSpotsDbContext context, IAvailabilityApiClient availabilityApiClient, 
-        IMessageBroker messageBroker)
+    public ParkingSpotsService(ParkingSpotsDbContext context, IMessageBroker messageBroker,
+        IAvailabilityApiClient availabilityApiClient)
     {
         _context = context;
-        _availabilityApiClient = availabilityApiClient;
-        _messageBroker = messageBroker;
         _parkingSpots = context.ParkingSpots;
+        _messageBroker = messageBroker;
+        _availabilityApiClient = availabilityApiClient;
     }
 
     public async Task<IEnumerable<ParkingSpot>> GetAllAsync()
@@ -33,10 +32,7 @@ internal sealed class ParkingSpotsService : IParkingSpotsService
     {
         await _parkingSpots.AddAsync(parkingSpot);
         await _context.SaveChangesAsync();
-        
-        // saved into outbox
-        //await _availabilityApiClient.AddResourceAsync(parkingSpot.Id, 2, new[] {"parking_spot"});
-        
+        // await _availabilityApiClient.AddResourceAsync(parkingSpot.Id, ParkingSpotCapacity, new[] {"parking_spot"});
         await _messageBroker.PublishAsync(new ParkingSpotCreated(parkingSpot.Id));
     }
 
@@ -64,5 +60,6 @@ internal sealed class ParkingSpotsService : IParkingSpotsService
 
         _parkingSpots.Remove(parkingSpot);
         await _context.SaveChangesAsync();
+        await _messageBroker.PublishAsync(new ParkingSpotDeleted(parkingSpotId));
     }
 }

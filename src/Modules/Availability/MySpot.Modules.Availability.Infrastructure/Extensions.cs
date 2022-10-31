@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MySpot.Modules.Availability.Core.Repositories;
 using MySpot.Modules.Availability.Infrastructure.DAL;
 using MySpot.Modules.Availability.Infrastructure.DAL.Repositories;
+using MySpot.Shared.Infrastructure.Messaging.Outbox;
 using MySpot.Shared.Infrastructure.Postgres;
 
 namespace MySpot.Modules.Availability.Infrastructure;
@@ -13,5 +14,6 @@ public static class Extensions
         => services
             .AddTransient<IResourcesRepository, ResourcesRepository>()
             .AddPostgres<AvailabilityDbContext>(configuration)
+            .AddOutbox<AvailabilityDbContext>(configuration)
             .AddUnitOfWork<AvailabilityUnitOfWork>();
 }

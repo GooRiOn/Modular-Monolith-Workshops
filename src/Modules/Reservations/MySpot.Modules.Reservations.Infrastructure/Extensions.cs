@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MySpot.Modules.Reservations.Core.Repositories;
 using MySpot.Modules.Reservations.Infrastructure.DAL;
 using MySpot.Modules.Reservations.Infrastructure.DAL.Repositories;
+using MySpot.Shared.Infrastructure.Messaging.Outbox;
 using MySpot.Shared.Infrastructure.Postgres;
 
 namespace MySpot.Modules.Reservations.Infrastructure;
@@ -14,5 +15,6 @@ public static class Extensions
         .AddTransient<IWeeklyReservationsRepository, WeeklyReservationsRepository>()
         .AddTransient<IUserRepository, UserRepository>()
         .AddPostgres<ReservationsDbContext>(configuration)
+        .AddOutbox<ReservationsDbContext>(configuration)
         .AddUnitOfWork<ReservationsUnitOfWork>();
 }

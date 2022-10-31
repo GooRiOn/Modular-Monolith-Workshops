@@ -3,9 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MySpot.Modules.ParkingSpots.Core.Clients;
 using MySpot.Modules.ParkingSpots.Core.DAL;
-using MySpot.Modules.ParkingSpots.Core.DAL.Decorators;
 using MySpot.Modules.ParkingSpots.Core.Services;
-using MySpot.Shared.Abstractions.Commands;
+using MySpot.Shared.Infrastructure;
 using MySpot.Shared.Infrastructure.Messaging.Outbox;
 using MySpot.Shared.Infrastructure.Postgres;
 
@@ -17,15 +16,12 @@ internal static class Extensions
 {
     public static IServiceCollection AddCore(this IServiceCollection services, IConfiguration configuration)
     {
-        services
+        return services
             .AddSingleton<IAvailabilityApiClient, AvailabilityApiClient>()
             .AddScoped<IParkingSpotsService, ParkingSpotsService>()
             .AddPostgres<ParkingSpotsDbContext>(configuration)
+            .AddOutbox<ParkingSpotsDbContext>(configuration)
             .AddUnitOfWork<ParkingSpotsUnitOfWork>()
-            .AddOutbox<ParkingSpotsDbContext>(configuration);
-
-        services.TryDecorate<IParkingSpotsService, TransactionalParkingSpotServiceDecorator>();
-
-        return services;
+            .AddInitializer<ParkingSpotsInitializer>();
     }
 }
